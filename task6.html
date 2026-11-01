@@ -1,0 +1,494 @@
+
+
+```html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wordle Challenge</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #151515, #292929);
+    color: white;
+    text-align: center;
+}
+
+header {
+    padding: 20px;
+    border-bottom: 2px solid #555;
+}
+
+h1 {
+    font-size: 45px;
+    color: #ffcc00;
+    text-shadow: 3px 3px red;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    color: #ddd;
+}
+
+.game {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 5px;
+    max-width: 480px;
+    margin: 25px auto;
+}
+
+.tile {
+    width: 100%;
+    aspect-ratio: 1;
+    border: 2px solid #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.correct {
+    background: #538d4e;
+    border-color: #538d4e;
+}
+
+.present {
+    background: #b59f3b;
+    border-color: #b59f3b;
+}
+
+.absent {
+    background: #3a3a3c;
+    border-color: #3a3a3c;
+}
+
+#keyboard {
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+.key-row {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 8px;
+}
+
+.key {
+    background: #818384;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    min-width: 35px;
+    height: 48px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.key.wide {
+    min-width: 65px;
+    font-size: 12px;
+}
+
+.key:hover {
+    opacity: 0.8;
+}
+
+#message {
+    min-height: 30px;
+    font-size: 19px;
+    color: #ffcc00;
+    font-weight: bold;
+    margin: 15px;
+}
+
+#winBox {
+    display: none;
+    background: linear-gradient(135deg, #ffcc00, #ff7b00);
+    color: #222;
+    border-radius: 20px;
+    padding: 30px;
+    margin: 25px auto;
+    box-shadow: 0 0 25px gold;
+}
+
+#winBox h2 {
+    font-size: 30px;
+}
+
+#secret {
+    font-size: 40px;
+    font-weight: bold;
+    letter-spacing: 6px;
+    color: #c00000;
+    margin: 20px;
+}
+
+button.action {
+    background: #ffcc00;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 25px;
+    margin: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button.action:hover {
+    background: white;
+    transform: scale(1.05);
+}
+
+#continueButton {
+    display: none;
+}
+
+@media(max-width: 500px) {
+    .game {
+        padding: 8px;
+    }
+
+    #board {
+        gap: 3px;
+    }
+
+    .tile {
+        font-size: 19px;
+    }
+
+    .key {
+        min-width: 28px;
+        height: 43px;
+        font-size: 12px;
+    }
+
+    .key.wide {
+        min-width: 48px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>WORDLE!</h1>
+    <p class="subtitle">🔤 Guess the secret 8-letter word! 🔤</p>
+</header>
+
+<div class="game">
+
+    <h3>Guess the 8-letter word in 6 tries!</h3>
+
+    <p>
+        🟩 Correct letter and position
+        <br>
+        🟨 Correct letter, wrong position
+        <br>
+        ⬛ Letter is not in the word
+    </p>
+
+    <div id="board"></div>
+
+    <div id="message">Good luck! Start guessing!</div>
+
+    <div id="keyboard"></div>
+
+    <button class="action" onclick="resetGame()">
+        NEW GAME
+    </button>
+
+    <div id="winBox">
+        <h2>🎉 YOU GOT IT! 🎉</h2>
+        <p>You solved the Wordle challenge!</p>
+        <p>Your secret answer is:</p>
+
+        <div id="secret">FAVEWAVE</div>
+
+        <p>🏆 Amazing work! 🏆</p>
+
+        <button class="action" id="continueButton"
+        onclick="window.location.href='task3.html'">
+            CONTINUE →
+        </button>
+    </div>
+
+</div>
+
+<script>
+
+const answer = "FAVEWAVE";
+const wordLength = 8;
+const maxAttempts = 6;
+
+let currentGuess = "";
+let currentRow = 0;
+let gameOver = false;
+
+let guesses = [];
+
+const board = document.getElementById("board");
+const keyboard = document.getElementById("keyboard");
+
+function createBoard() {
+
+    board.innerHTML = "";
+
+    for(let i = 0; i < maxAttempts * wordLength; i++) {
+
+        let tile = document.createElement("div");
+
+        tile.className = "tile";
+        tile.id = "tile" + i;
+
+        board.appendChild(tile);
+    }
+}
+
+function createKeyboard() {
+
+    keyboard.innerHTML = "";
+
+    const rows = [
+        "QWERTYUIOP",
+        "ASDFGHJKL",
+        "ZXCVBNM"
+    ];
+
+    rows.forEach((row, index) => {
+
+        let rowDiv = document.createElement("div");
+        rowDiv.className = "key-row";
+
+        if(index === 2) {
+
+            let enter = document.createElement("button");
+            enter.className = "key wide";
+            enter.innerText = "ENTER";
+            enter.onclick = submitGuess;
+            rowDiv.appendChild(enter);
+
+        }
+
+        for(let letter of row) {
+
+            let button = document.createElement("button");
+
+            button.className = "key";
+            button.innerText = letter;
+
+            button.id = "key" + letter;
+
+            button.onclick = () => addLetter(letter);
+
+            rowDiv.appendChild(button);
+        }
+
+        if(index === 2) {
+
+            let back = document.createElement("button");
+            back.className = "key wide";
+            back.innerText = "⌫";
+            back.onclick = deleteLetter;
+
+            rowDiv.appendChild(back);
+        }
+
+        keyboard.appendChild(rowDiv);
+    });
+}
+
+function addLetter(letter) {
+
+    if(gameOver || currentGuess.length >= wordLength) return;
+
+    currentGuess += letter;
+
+    updateBoard();
+}
+
+function deleteLetter() {
+
+    if(gameOver) return;
+
+    currentGuess = currentGuess.slice(0, -1);
+
+    updateBoard();
+}
+
+function updateBoard() {
+
+    for(let i = 0; i < wordLength; i++) {
+
+        let tile = document.getElementById(
+            "tile" + (currentRow * wordLength + i)
+        );
+
+        tile.innerText = currentGuess[i] || "";
+    }
+}
+
+function submitGuess() {
+
+    if(gameOver) return;
+
+    if(currentGuess.length !== wordLength) {
+
+        document.getElementById("message").innerText =
+            "You need 8 letters to submit your guess!";
+
+        return;
+    }
+
+    guesses.push(currentGuess);
+
+    let remaining = answer.split("");
+
+    let results = Array(wordLength).fill("absent");
+
+    // First check letters in the correct position.
+    for(let i = 0; i < wordLength; i++) {
+
+        if(currentGuess[i] === answer[i]) {
+
+            results[i] = "correct";
+            remaining[i] = null;
+        }
+    }
+
+    // Then check letters in the wrong position.
+    for(let i = 0; i < wordLength; i++) {
+
+        if(results[i] === "correct") continue;
+
+        let found = remaining.indexOf(currentGuess[i]);
+
+        if(found !== -1) {
+
+            results[i] = "present";
+            remaining[found] = null;
+        }
+    }
+
+    // Display colored tiles.
+    for(let i = 0; i < wordLength; i++) {
+
+        let tile = document.getElementById(
+            "tile" + (currentRow * wordLength + i)
+        );
+
+        tile.classList.add(results[i]);
+
+        let key = document.getElementById(
+            "key" + currentGuess[i]
+        );
+
+        if(key) {
+
+            if(results[i] === "correct") {
+                key.style.background = "#538d4e";
+            }
+            else if(results[i] === "present" &&
+                    key.style.background !== "rgb(83, 141, 78)") {
+                key.style.background = "#b59f3b";
+            }
+            else if(results[i] === "absent" &&
+                    !key.style.background) {
+                key.style.background = "#3a3a3c";
+            }
+        }
+    }
+
+    if(currentGuess === answer) {
+
+        gameOver = true;
+
+        document.getElementById("message").innerText =
+            "🎉 CORRECT! YOU SOLVED IT! 🎉";
+
+        document.getElementById("winBox").style.display = "block";
+
+        document.getElementById("continueButton").style.display =
+            "inline-block";
+
+        return;
+    }
+
+    currentRow++;
+
+    if(currentRow >= maxAttempts) {
+
+        gameOver = true;
+
+        document.getElementById("message").innerText =
+            "Game over! The answer was FAVEWAVE.";
+
+        return;
+    }
+
+    currentGuess = "";
+
+    document.getElementById("message").innerText =
+        "Not quite! Try another guess.";
+
+}
+
+function resetGame() {
+
+    currentGuess = "";
+    currentRow = 0;
+    gameOver = false;
+    guesses = [];
+
+    document.getElementById("message").innerText =
+        "Good luck! Start guessing!";
+
+    document.getElementById("winBox").style.display = "none";
+
+    createBoard();
+    createKeyboard();
+}
+
+document.addEventListener("keydown", function(event) {
+
+    if(gameOver) return;
+
+    if(event.key === "Enter") {
+        submitGuess();
+    }
+    else if(event.key === "Backspace") {
+        deleteLetter();
+    }
+    else if(/^[a-zA-Z]$/.test(event.key)) {
+        addLetter(event.key.toUpperCase());
+    }
+
+});
+
+createBoard();
+createKeyboard();
+
+</script>
+
+</body>
+</html>

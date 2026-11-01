@@ -1,0 +1,481 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday FAVEWAVE! 🎂</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Georgia, serif;
+    background:
+        radial-gradient(ellipse at center, #493044 0%, #211725 55%, #100e19 100%);
+    color: white;
+}
+
+.container {
+    width: 100%;
+    max-width: 650px;
+    padding: 30px 15px;
+    text-align: center;
+}
+
+h1 {
+    font-size: clamp(30px, 7vw, 48px);
+    color: #ffd9e8;
+    text-shadow: 0 0 20px #ff72ad;
+    margin-bottom: 12px;
+}
+
+.message {
+    font-size: 19px;
+    line-height: 1.7;
+    color: #ffe8f0;
+    margin-bottom: 30px;
+}
+
+.message strong {
+    color: #ffacd0;
+    font-size: 24px;
+}
+
+.cake-scene {
+    position: relative;
+    height: 340px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin: 0 auto 15px;
+    filter: drop-shadow(0 15px 20px #0008);
+}
+
+.cake {
+    position: relative;
+    width: 290px;
+    height: 230px;
+}
+
+/* Cake bottom */
+.bottom {
+    position: absolute;
+    bottom: 28px;
+    left: 5px;
+    width: 280px;
+    height: 105px;
+    background:
+        linear-gradient(90deg,
+        #57231e, #a34b38 18%,
+        #7a3028 50%, #b65d43 85%, #57231e);
+    border-radius: 12px 12px 22px 22px;
+    box-shadow: inset 0 -12px 15px #3d1719;
+}
+
+/* Cream filling */
+.filling {
+    position: absolute;
+    bottom: 116px;
+    left: 9px;
+    width: 272px;
+    height: 18px;
+    background: linear-gradient(#fff0df, #f4c5ae);
+    border-radius: 50%;
+    z-index: 2;
+}
+
+/* Top cake layer */
+.top {
+    position: absolute;
+    bottom: 127px;
+    left: 18px;
+    width: 254px;
+    height: 65px;
+    background: linear-gradient(
+        90deg, #713128, #bb6850, #8d4034, #c27857, #713128
+    );
+    border-radius: 50% 50% 12px 12px / 20% 20% 12px 12px;
+    box-shadow: inset 0 -9px 12px #54221f;
+}
+
+/* Cream frosting */
+.frosting {
+    position: absolute;
+    bottom: 167px;
+    left: 12px;
+    width: 266px;
+    height: 45px;
+    background: linear-gradient(180deg, #fff8ed, #f8d8c9);
+    border-radius: 50%;
+    z-index: 3;
+    box-shadow: inset 0 -5px 8px #e9b8a6;
+}
+
+.frosting::after {
+    content: "";
+    position: absolute;
+    top: 20px;
+    left: 5px;
+    width: 256px;
+    height: 24px;
+    background: #f6d2bf;
+    border-radius: 0 0 50% 50%;
+    clip-path: polygon(
+        0 0, 100% 0, 100% 30%, 90% 100%,
+        80% 30%, 70% 100%, 60% 30%,
+        50% 100%, 40% 30%, 30% 100%,
+        20% 30%, 10% 100%, 0 30%
+    );
+}
+
+/* Decorative cream swirls */
+.decoration {
+    position: absolute;
+    bottom: 151px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff9ed, #edbca9);
+    z-index: 4;
+}
+
+.decoration:nth-of-type(1) { left: 35px; }
+.decoration:nth-of-type(2) { left: 83px; }
+.decoration:nth-of-type(3) { left: 130px; }
+.decoration:nth-of-type(4) { left: 178px; }
+.decoration:nth-of-type(5) { left: 226px; }
+
+/* Strawberries */
+.berry {
+    position: absolute;
+    bottom: 191px;
+    width: 24px;
+    height: 29px;
+    background: linear-gradient(120deg, #ff777c, #c9213d);
+    border-radius: 50% 50% 45% 45%;
+    transform: rotate(180deg);
+    z-index: 5;
+    box-shadow: inset 3px 0 4px #ffb2a0;
+}
+
+.berry::before {
+    content: "✦";
+    position: absolute;
+    top: -9px;
+    left: 5px;
+    color: #76a75b;
+    font-size: 15px;
+}
+
+.berry.one { left: 54px; }
+.berry.two { left: 130px; }
+.berry.three { left: 207px; }
+
+/* Chocolate decorations */
+.chocolate {
+    position: absolute;
+    bottom: 45px;
+    width: 9px;
+    height: 35px;
+    background: #e7a68b;
+    border-radius: 10px;
+    opacity: .7;
+}
+
+.chocolate.one { left: 55px; transform: rotate(15deg); }
+.chocolate.two { left: 145px; transform: rotate(-12deg); }
+.chocolate.three { left: 220px; transform: rotate(18deg); }
+
+/* Cake plate */
+.plate {
+    position: absolute;
+    bottom: 13px;
+    left: -15px;
+    width: 320px;
+    height: 30px;
+    background: linear-gradient(#fff, #c5b6c9, #fff);
+    border-radius: 50%;
+    box-shadow: 0 9px 15px #0008;
+}
+
+/* Candles */
+.candles {
+    position: absolute;
+    bottom: 200px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+    z-index: 8;
+}
+
+.candle {
+    position: relative;
+    width: 13px;
+    height: 65px;
+    border-radius: 4px;
+    background: repeating-linear-gradient(
+        45deg, #fff 0 6px, #f58cb8 6px 12px
+    );
+    box-shadow: 1px 2px 5px #0005;
+}
+
+.flame {
+    position: absolute;
+    top: -28px;
+    left: 0;
+    width: 13px;
+    height: 25px;
+    border-radius: 50% 50% 45% 45%;
+    background: radial-gradient(
+        ellipse at 50% 70%, #fff 0%, #fff5a1 30%,
+        #ffad30 65%, #ff5626 100%
+    );
+    box-shadow: 0 0 15px #ffad30, 0 0 35px #ff702c;
+    animation: flicker .4s infinite alternate;
+    transform-origin: bottom;
+}
+
+@keyframes flicker {
+    0% { transform: rotate(-8deg) scale(1); }
+    100% { transform: rotate(8deg) scale(.85); }
+}
+
+.flame.out {
+    display: none;
+}
+
+/* Celebration */
+#status {
+    min-height: 35px;
+    color: #ffd8e8;
+    font-size: 17px;
+}
+
+#celebration {
+    display: none;
+    font-size: 28px;
+    color: #ffb9d5;
+    animation: pop .7s infinite alternate;
+    text-shadow: 0 0 15px #ff72ad;
+}
+
+@keyframes pop {
+    to { transform: scale(1.08); }
+}
+
+#permission {
+    font-size: 13px;
+    color: #cdb8c9;
+    margin-top: 15px;
+}
+
+.confetti {
+    position: fixed;
+    top: -20px;
+    width: 9px;
+    height: 12px;
+    z-index: 20;
+    pointer-events: none;
+    animation: fall 4s linear forwards;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(110vh) rotate(800deg);
+    }
+}
+
+@media(max-width: 400px) {
+    .cake {
+        transform: scale(.9);
+        transform-origin: bottom center;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>THE END! ✨</h1>
+
+    <div class="message">
+        Happy Birthday <strong>FAVEWAVE</strong> 💗<br>
+        I hope you enjoyed, but now it's time to blow your candles!
+    </div>
+
+    <div class="cake-scene">
+
+        <div class="cake">
+
+            <div class="bottom"></div>
+            <div class="filling"></div>
+            <div class="top"></div>
+            <div class="frosting"></div>
+
+            <div class="decoration"></div>
+            <div class="decoration"></div>
+            <div class="decoration"></div>
+            <div class="decoration"></div>
+            <div class="decoration"></div>
+
+            <div class="berry one"></div>
+            <div class="berry two"></div>
+            <div class="berry three"></div>
+
+            <div class="chocolate one"></div>
+            <div class="chocolate two"></div>
+            <div class="chocolate three"></div>
+
+            <div class="candles">
+                <div class="candle"><div class="flame"></div></div>
+                <div class="candle"><div class="flame"></div></div>
+                <div class="candle"><div class="flame"></div></div>
+                <div class="candle"><div class="flame"></div></div>
+                <div class="candle"><div class="flame"></div></div>
+            </div>
+
+            <div class="plate"></div>
+
+        </div>
+    </div>
+
+    <div id="status">
+        💨 Blow into your microphone to make a wish!
+    </div>
+
+    <div id="celebration">
+        🎉 YOU DID IT! 🎉<br>
+        HAPPY BIRTHDAY FAVEWAVE! 💗<br>
+        Make a wish! ✨
+    </div>
+
+    <div id="permission"></div>
+
+</div>
+
+<script>
+const flames = document.querySelectorAll(".flame");
+const statusText = document.getElementById("status");
+const celebration = document.getElementById("celebration");
+const permission = document.getElementById("permission");
+
+let audioContext;
+let analyser;
+let stream;
+let blownOut = false;
+let blowFrames = 0;
+
+async function startMicrophone() {
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({
+            audio: true
+        });
+
+        audioContext = new AudioContext();
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 2048;
+
+        const mic = audioContext.createMediaStreamSource(stream);
+        mic.connect(analyser);
+
+        permission.textContent = "";
+        detectBlow();
+
+    } catch (error) {
+        permission.textContent =
+            "Please allow microphone access to blow out the candles.";
+    }
+}
+
+function detectBlow() {
+    if (blownOut) return;
+
+    const data = new Uint8Array(analyser.fftSize);
+
+    analyser.getByteTimeDomainData(data);
+
+    let sum = 0;
+
+    for (let i = 0; i < data.length; i++) {
+        const value = (data[i] - 128) / 128;
+        sum += value * value;
+    }
+
+    const volume = Math.sqrt(sum / data.length);
+
+    if (volume > 0.055) {
+        blowFrames++;
+    } else {
+        blowFrames = Math.max(0, blowFrames - 1);
+    }
+
+    if (blowFrames >= 8) {
+        blowOut();
+        return;
+    }
+
+    requestAnimationFrame(detectBlow);
+}
+
+function blowOut() {
+    blownOut = true;
+
+    flames.forEach((flame, index) => {
+        setTimeout(() => {
+            flame.classList.add("out");
+        }, index * 200);
+    });
+
+    statusText.textContent = "💨 WHOOSH! You blew them out!";
+
+    setTimeout(() => {
+        celebration.style.display = "block";
+        confetti();
+        
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    }, 1200);
+}
+
+function confetti() {
+    const colors = [
+        "#ff8bb8", "#ffe47a", "#c5a4ff",
+        "#9be9ff", "#ffffff", "#ffb17a"
+    ];
+
+    for (let i = 0; i < 120; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti";
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.background =
+            colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = Math.random() * 2 + "s";
+
+        document.body.appendChild(piece);
+
+        setTimeout(() => piece.remove(), 6000);
+    }
+}
+
+// Ask for microphone permission automatically
+window.addEventListener("load", () => {
+    setTimeout(startMicrophone, 800);
+});
+</script>
+
+</body>
+</html>

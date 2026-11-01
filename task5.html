@@ -1,0 +1,620 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNO Challenge</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #151515, #292929);
+    color: white;
+    text-align: center;
+}
+
+header {
+    padding: 20px;
+}
+
+h1 {
+    font-size: 55px;
+    color: #ffcc00;
+    text-shadow: 3px 3px red;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    color: #ddd;
+}
+
+.game {
+    max-width: 950px;
+    margin: auto;
+    padding: 20px;
+}
+
+.opponents {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 25px 0;
+}
+
+.player-box {
+    background: #383838;
+    padding: 15px;
+    border-radius: 12px;
+    min-width: 130px;
+    border: 2px solid #666;
+}
+
+.player-box.active {
+    border: 3px solid #ffcc00;
+    box-shadow: 0 0 15px #ffcc00;
+}
+
+.table {
+    background: #126b40;
+    border: 8px solid #80451f;
+    border-radius: 150px;
+    min-height: 230px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    margin: 20px auto;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.card {
+    width: 75px;
+    height: 110px;
+    border: 4px solid white;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px black;
+    box-shadow: 3px 4px 6px #222;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-12px);
+}
+
+.red { background: #e52521; }
+.blue { background: #1769db; }
+.green { background: #159447; }
+.yellow { background: #e5b900; color: black; }
+
+.wild {
+    background: linear-gradient(135deg,
+    red 25%, blue 25% 50%, green 50% 75%, yellow 75%);
+}
+
+.card.back {
+    background: linear-gradient(135deg, #e52521, #1769db);
+    cursor: pointer;
+}
+
+.controls {
+    margin: 20px;
+}
+
+button {
+    background: #ffcc00;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 22px;
+    margin: 7px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: white;
+    transform: scale(1.05);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#message {
+    font-size: 20px;
+    color: #ffcc00;
+    min-height: 30px;
+    font-weight: bold;
+}
+
+.hand {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 20px;
+    min-height: 150px;
+}
+
+.hand .card {
+    width: 65px;
+    height: 95px;
+    font-size: 22px;
+}
+
+#answer {
+    display: none;
+    margin: 35px auto;
+    padding: 35px;
+    max-width: 600px;
+    background: linear-gradient(135deg, #ffcc00, #ff7b00);
+    color: #222;
+    border-radius: 20px;
+    box-shadow: 0 0 30px gold;
+}
+
+#answer h2 {
+    font-size: 35px;
+}
+
+#secret {
+    font-size: 55px;
+    font-weight: bold;
+    letter-spacing: 10px;
+    color: #c00000;
+}
+
+#colorPicker {
+    display: none;
+    margin: 15px;
+}
+
+#colorPicker button {
+    color: white;
+}
+
+#nextTask {
+    margin: 30px auto;
+    padding: 18px 35px;
+    font-size: 20px;
+    background: #ffcc00;
+}
+
+@media(max-width: 600px) {
+    h1 { font-size: 40px; }
+    .table { border-radius: 30px; }
+    .card { width: 60px; height: 90px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>UNO!</h1>
+    <p class="subtitle">🏆 Win the game to unlock the secret answer! 🏆</p>
+</header>
+
+<div class="game">
+
+    <div class="opponents" id="opponents"></div>
+
+    <div class="table">
+        <div>
+            <p>DRAW PILE</p>
+            <div class="card back" onclick="drawCard()">UNO</div>
+        </div>
+
+        <div>
+            <p>TOP CARD</p>
+            <div id="topCard"></div>
+        </div>
+    </div>
+
+    <div id="message">
+        Your turn! Choose a matching card.
+    </div>
+
+    <div id="colorPicker">
+        <p>Choose a color for your Wild card:</p>
+        <button style="background:red" onclick="chooseColor('red')">RED</button>
+        <button style="background:blue" onclick="chooseColor('blue')">BLUE</button>
+        <button style="background:green" onclick="chooseColor('green')">GREEN</button>
+        <button style="background:#e5b900" onclick="chooseColor('yellow')">YELLOW</button>
+    </div>
+
+    <div class="controls">
+        <button onclick="drawCard()" id="drawButton">DRAW CARD</button>
+        <button onclick="passTurn()" id="passButton">PASS TURN</button>
+        <button onclick="newGame()">NEW GAME</button>
+    </div>
+
+    <h2>Your Cards</h2>
+    <div class="hand" id="hand"></div>
+
+    <div id="answer">
+        <h2>🎉 CONGRATULATIONS! 🎉</h2>
+        <p>You won the UNO challenge!</p>
+        <p>You have unlocked the secret answer:</p>
+        <div id="secret">BIRTHDAY</div>
+        <p>🏆 Amazing job! 🏆</p>
+    </div>
+
+    <div class="controls">
+        <button id="nextTask" onclick="window.location.href='task2.html'">
+            GO TO TASK 2 →
+        </button>
+    </div>
+
+</div>
+
+<script>
+const colors = ["red", "blue", "green", "yellow"];
+
+let deck = [];
+let players = [];
+let currentPlayer = 0;
+let topCard = null;
+let currentColor = "";
+let direction = 1;
+let gameOver = false;
+let choosingWild = false;
+let hasDrawn = false;
+
+function shuffle(array) {
+    for(let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function createDeck() {
+    deck = [];
+
+    colors.forEach(color => {
+        for(let n = 0; n <= 9; n++) {
+            deck.push({color, value: String(n)});
+            if(n !== 0) deck.push({color, value: String(n)});
+        }
+
+        ["Skip", "Reverse", "+2"].forEach(value => {
+            deck.push({color, value});
+            deck.push({color, value});
+        });
+    });
+
+    for(let i = 0; i < 4; i++) {
+        deck.push({color: "wild", value: "Wild"});
+        deck.push({color: "wild", value: "+4"});
+    }
+
+    shuffle(deck);
+}
+
+function drawFromDeck() {
+    if(deck.length === 0) {
+        return {color: currentColor, value: "0"};
+    }
+    return deck.pop();
+}
+
+function newGame() {
+    createDeck();
+
+    players = [
+        {name: "You", hand: []},
+        {name: "CPU 1", hand: []},
+        {name: "CPU 2", hand: []},
+        {name: "CPU 3", hand: []}
+    ];
+
+    // Give the human player a much stronger starting hand.
+    for(let i = 0; i < 7; i++) {
+        players[0].hand.push(drawFromDeck());
+    }
+
+    // Give computers smaller hands.
+    players[1].hand = [drawFromDeck(), drawFromDeck(), drawFromDeck()];
+    players[2].hand = [drawFromDeck(), drawFromDeck(), drawFromDeck()];
+    players[3].hand = [drawFromDeck(), drawFromDeck(), drawFromDeck()];
+
+    // Add useful playable cards to your hand.
+    players[0].hand.push(
+        {color: "red", value: "5"},
+        {color: "red", value: "7"},
+        {color: "blue", value: "5"},
+        {color: "green", value: "5"},
+        {color: "yellow", value: "5"},
+        {color: "wild", value: "Wild"},
+        {color: "wild", value: "+4"}
+    );
+
+    topCard = {color: "red", value: "5"};
+    currentColor = "red";
+
+    currentPlayer = 0;
+    direction = 1;
+    gameOver = false;
+    choosingWild = false;
+    hasDrawn = false;
+
+    document.getElementById("answer").style.display = "none";
+    document.getElementById("colorPicker").style.display = "none";
+
+    document.getElementById("message").innerText =
+        "Your turn! You have extra cards to help you win!";
+
+    render();
+}
+
+function cardHTML(card) {
+    return `<div class="card ${card.color}">${card.value}</div>`;
+}
+
+function canPlay(card) {
+    return card.color === "wild" ||
+           card.color === currentColor ||
+           card.value === topCard.value;
+}
+
+function render() {
+    document.getElementById("topCard").innerHTML =
+        cardHTML(topCard);
+
+    document.getElementById("hand").innerHTML = "";
+
+    players[0].hand.forEach((card, index) => {
+        let div = document.createElement("div");
+        div.innerHTML = cardHTML(card);
+        div.firstElementChild.onclick = () => playCard(index);
+        document.getElementById("hand").appendChild(div.firstElementChild);
+    });
+
+    let opponentsHTML = "";
+
+    players.forEach((player, index) => {
+        opponentsHTML += `
+            <div class="player-box ${currentPlayer === index ? 'active' : ''}">
+                <h3>${player.name}</h3>
+                <p>${player.hand.length} cards</p>
+                ${index === currentPlayer ? "🎯 Playing" : "Waiting"}
+            </div>
+        `;
+    });
+
+    document.getElementById("opponents").innerHTML = opponentsHTML;
+
+    document.getElementById("drawButton").disabled =
+        gameOver || currentPlayer !== 0 || choosingWild || hasDrawn;
+
+    document.getElementById("passButton").disabled =
+        gameOver || currentPlayer !== 0 || choosingWild;
+}
+
+function playCard(index) {
+    if(gameOver || currentPlayer !== 0 || choosingWild) return;
+
+    let card = players[0].hand[index];
+
+    if(!canPlay(card)) {
+        document.getElementById("message").innerText =
+            "You cannot play that card! Match the color or number.";
+        return;
+    }
+
+    players[0].hand.splice(index, 1);
+    topCard = card;
+
+    if(card.color !== "wild") {
+        currentColor = card.color;
+    }
+
+    if(players[0].hand.length === 0) {
+        winGame(0);
+        return;
+    }
+
+    render();
+
+    if(card.color === "wild") {
+        choosingWild = true;
+        document.getElementById("colorPicker").style.display = "block";
+        document.getElementById("message").innerText = "Choose a color!";
+        return;
+    }
+
+    applyEffect(card);
+}
+
+function chooseColor(color) {
+    if(!choosingWild) return;
+
+    currentColor = color;
+    choosingWild = false;
+
+    document.getElementById("colorPicker").style.display = "none";
+
+    applyEffect(topCard);
+}
+
+function nextPlayer() {
+    return (currentPlayer + direction + players.length) % players.length;
+}
+
+function applyEffect(card) {
+    if(card.value === "Skip") {
+        currentPlayer = nextPlayer();
+        document.getElementById("message").innerText = "Skip!";
+    }
+    else if(card.value === "Reverse") {
+        direction *= -1;
+        currentPlayer = nextPlayer();
+        document.getElementById("message").innerText = "Reverse!";
+    }
+    else if(card.value === "+2") {
+        let next = nextPlayer();
+        players[next].hand.push(drawFromDeck(), drawFromDeck());
+        currentPlayer = nextPlayer();
+        document.getElementById("message").innerText = "Draw Two!";
+    }
+    else if(card.value === "+4") {
+        let next = nextPlayer();
+        for(let i = 0; i < 4; i++) {
+            players[next].hand.push(drawFromDeck());
+        }
+        currentPlayer = nextPlayer();
+        document.getElementById("message").innerText = "Wild Draw Four!";
+    }
+    else {
+        currentPlayer = nextPlayer();
+        document.getElementById("message").innerText =
+            "Your turn is coming up!";
+    }
+
+    render();
+
+    if(currentPlayer !== 0) {
+        setTimeout(cpuTurn, 700);
+    }
+}
+
+function drawCard() {
+    if(gameOver || currentPlayer !== 0 || choosingWild || hasDrawn) return;
+
+    // Give the player a playable card.
+    let card = {color: currentColor, value: "5"};
+
+    players[0].hand.push(card);
+    hasDrawn = true;
+
+    render();
+
+    document.getElementById("message").innerText =
+        "You drew a playable card! Play it or pass your turn.";
+}
+
+function passTurn() {
+    if(gameOver || currentPlayer !== 0 || choosingWild) return;
+
+    hasDrawn = false;
+    currentPlayer = nextPlayer();
+
+    render();
+
+    document.getElementById("message").innerText =
+        "Computer's turn...";
+
+    setTimeout(cpuTurn, 700);
+}
+
+function cpuTurn() {
+    if(gameOver || currentPlayer === 0) return;
+
+    let player = players[currentPlayer];
+
+    // Computers usually draw instead of playing.
+    // This gives the human player a much better chance.
+    if(Math.random() < 0.85) {
+        player.hand.push(drawFromDeck());
+
+        document.getElementById("message").innerText =
+            player.name + " drew a card.";
+
+        currentPlayer = nextPlayer();
+        render();
+
+        if(currentPlayer === 0) {
+            document.getElementById("message").innerText =
+                "Your turn! Choose a card.";
+        } else {
+            setTimeout(cpuTurn, 700);
+        }
+
+        return;
+    }
+
+    let playableIndex = player.hand.findIndex(canPlay);
+
+    if(playableIndex === -1) {
+        player.hand.push(drawFromDeck());
+        currentPlayer = nextPlayer();
+        render();
+
+        if(currentPlayer === 0) {
+            document.getElementById("message").innerText =
+                "Your turn! Choose a card.";
+        } else {
+            setTimeout(cpuTurn, 700);
+        }
+
+        return;
+    }
+
+    let card = player.hand.splice(playableIndex, 1)[0];
+    topCard = card;
+
+    if(card.color !== "wild") {
+        currentColor = card.color;
+    } else {
+        currentColor = "red";
+    }
+
+    if(player.hand.length === 0) {
+        winGame(currentPlayer);
+        return;
+    }
+
+    currentPlayer = nextPlayer();
+
+    render();
+
+    document.getElementById("message").innerText =
+        player.name + " played " + card.value + "!";
+
+    if(currentPlayer === 0) {
+        document.getElementById("message").innerText +=
+            " Your turn!";
+    } else {
+        setTimeout(cpuTurn, 700);
+    }
+}
+
+function winGame(winner) {
+    gameOver = true;
+
+    if(winner === 0) {
+        document.getElementById("message").innerText =
+            "🎉 YOU WON UNO! 🎉";
+
+        document.getElementById("answer").style.display = "block";
+    } else {
+        document.getElementById("message").innerText =
+            players[winner].name + " won! Try again!";
+    }
+
+    render();
+}
+
+newGame();
+</script>
+
+</body>
+</html>

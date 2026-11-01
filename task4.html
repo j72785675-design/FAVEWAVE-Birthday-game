@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Answer</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    background: #10101c;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    text-align: center;
+}
+
+.game {
+    width: 90%;
+    max-width: 600px;
+    padding: 35px;
+    background: #1c1c30;
+    border: 2px solid #a78bfa;
+    border-radius: 20px;
+    box-shadow: 0 0 30px #8b5cf655;
+}
+
+h1 {
+    color: #c4b5fd;
+    letter-spacing: 4px;
+}
+
+p {
+    color: #d1d5db;
+    line-height: 1.7;
+}
+
+input {
+    padding: 12px;
+    width: 80%;
+    margin: 15px;
+    border-radius: 8px;
+    border: 1px solid #a78bfa;
+    background: #10101c;
+    color: white;
+    text-align: center;
+    font-size: 18px;
+}
+
+button {
+    padding: 12px 25px;
+    background: #8b5cf6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 8px;
+}
+
+button:hover {
+    background: #a78bfa;
+    transform: scale(1.05);
+}
+
+.message {
+    margin-top: 20px;
+    color: #facc15;
+    min-height: 30px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.answer {
+    font-size: clamp(25px, 7vw, 42px);
+    color: #c4b5fd;
+    font-weight: bold;
+    margin-top: 30px;
+    text-shadow: 0 0 20px #a78bfa;
+}
+
+#final {
+    animation: reveal 2s ease;
+}
+
+@keyframes reveal {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <!-- INTRO -->
+    <div id="intro">
+        <h1>PROJECT: UNKNOWN</h1>
+        <p>Something is hidden here.</p>
+        <p>Three puzzles stand between you and the truth.</p>
+        <p>Think carefully. Every answer matters.</p>
+        <button onclick="startGame()">BEGIN</button>
+    </div>
+
+    <!-- PUZZLE 1 -->
+    <div id="puzzle1" class="hidden">
+        <h1>PUZZLE 01</h1>
+        <p>I have hands but cannot clap.</p>
+        <p>I move but never walk.</p>
+        <p>What am I?</p>
+
+        <input id="answer1" placeholder="Your answer..." autocomplete="off">
+        <br>
+        <button onclick="check1()">SUBMIT</button>
+
+        <div id="message1" class="message"></div>
+    </div>
+
+    <!-- PUZZLE 2 -->
+    <div id="puzzle2" class="hidden">
+        <h1>PUZZLE 02</h1>
+        <p>What comes once in a minute,</p>
+        <p>twice in a moment,</p>
+        <p>but never in a thousand years?</p>
+
+        <input id="answer2" placeholder="Your answer..." autocomplete="off">
+        <br>
+        <button onclick="check2()">SUBMIT</button>
+
+        <div id="message2" class="message"></div>
+    </div>
+
+    <!-- PUZZLE 3 -->
+    <div id="puzzle3" class="hidden">
+        <h1>PUZZLE 03</h1>
+        <p>Unscramble these letters:</p>
+
+        <h2 style="color:#c4b5fd;">T A E D</h2>
+
+        <p>It can be circled on a calendar.</p>
+
+        <input id="answer3" placeholder="Your answer..." autocomplete="off">
+        <br>
+        <button onclick="check3()">SUBMIT</button>
+
+        <div id="message3" class="message"></div>
+    </div>
+
+    <!-- FINAL ANSWER -->
+    <div id="final" class="hidden">
+        <h1>ALL PUZZLES SOLVED</h1>
+
+        <p>You found what was hidden.</p>
+        <p>After all the clues, all the questions,</p>
+        <p>and all the searching...</p>
+
+        <div class="answer">
+            THE ANSWER IS DATE
+        </div>
+
+        <p>Some things are worth waiting for.</p>
+
+        <button onclick="goToAnswer1()">GO TO ANSWER 1</button>
+    </div>
+
+</div>
+
+<script>
+
+// SHOW THE SELECTED SCREEN
+function show(id) {
+
+    const screens = document.querySelectorAll('.game > div');
+
+    screens.forEach(screen => {
+        screen.classList.add('hidden');
+    });
+
+    const selectedScreen = document.getElementById(id);
+
+    selectedScreen.classList.remove('hidden');
+}
+
+// START GAME
+function startGame() {
+    show('puzzle1');
+}
+
+// PUZZLE 1
+function check1() {
+
+    const answer = document.getElementById('answer1')
+        .value.toLowerCase().trim();
+
+    if (answer === 'clock') {
+        show('puzzle2');
+    } else {
+        document.getElementById('message1').innerText =
+            "Not quite. Think about time...";
+    }
+}
+
+// PUZZLE 2
+function check2() {
+
+    const answer = document.getElementById('answer2')
+        .value.toLowerCase().trim();
+
+    if (answer === 'm') {
+        show('puzzle3');
+    } else {
+        document.getElementById('message2').innerText =
+            "Try again. Look closely at the words.";
+    }
+}
+
+// PUZZLE 3
+function check3() {
+
+    const answer = document.getElementById('answer3')
+        .value.toLowerCase().trim();
+
+    if (answer === 'date') {
+        show('final');
+    } else {
+        document.getElementById('message3').innerText =
+            "Not quite. Rearrange the letters!";
+    }
+}
+
+// GO TO ANSWER 1
+function goToAnswer1() {
+    window.location.href = 'task1.html';
+}
+
+// ALLOW ENTER KEY TO SUBMIT ANSWERS
+document.querySelectorAll('input').forEach((input, index) => {
+
+    input.addEventListener('keydown', function(event) {
+
+        if (event.key === 'Enter') {
+
+            if (index === 0) check1();
+            if (index === 1) check2();
+            if (index === 2) check3();
+
+        }
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>

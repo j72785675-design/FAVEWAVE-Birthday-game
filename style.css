@@ -1,0 +1,128 @@
+
+/* Body */
+body {
+    background: radial-gradient(circle at top, #000000, #010a1b);
+    color: #c1f0ef;
+    font-family: 'Orbitron', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Container */
+.container {
+    text-align: center;
+    padding: 30px;
+    background: white;
+    border: 2px solid rgb(199, 212, 241);
+    border-radius: 10px;
+    box-shadow: 0 0 20px #4c89ea, 0 0 30px #82bce1;
+    width: 80%;
+    max-width: 600px;
+    margin: auto;
+    z-index: 2;
+    animation: fadeIn 2s ease-out;
+
+    /* Center everything inside */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Neon title */
+h1 {
+    font-size: 3em;
+    color: #ffffff;
+    text-shadow: 0 0 10px cornflowerblue, 0 0 10px cornflowerblue;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Paragraphs */
+p {
+    font-size: 1.2em;
+    color: #000;
+    text-shadow: 0 0 5px rgb(105, 101, 172), 0 0 10px rgb(153, 167, 223);
+    margin-bottom: 20px;
+    text-align: center;
+    animation: fadeIn 2s ease-in-out;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Input */
+input {
+    box-sizing: border-box;
+    padding: 15px;
+    border: 2px solid cornflowerblue;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 300px;
+    font-size: 16px;
+    margin: 10px auto;
+    display: block;
+    background-color: #9d9de7;
+    color: #000;
+    text-shadow: 0 0 5px rgb(155, 223, 232), 0 0 10px coral;
+    box-shadow: 0 0 10px rgb(160, 248, 253);
+    animation: fadeIn 2s ease-in-out;
+}
+
+/* Button */
+button {
+    padding: 12px 20px;
+    background-color: #ffffff;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 20px auto 0;
+    display: block;
+    font-size: 1.2em;
+    text-shadow: 0 0 5px rgb(160, 179, 221);
+    box-shadow: 0 0 rgb(123, 187, 213), 0 0 20px purple;
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 2.5s ease-in-out;
+}
+
+button:hover {
+    background-color: antiquewhite;
+    box-shadow: 0 0 20px rgb(255, 255, 255), 0 0 40px palevioletred;
+    transform: scale(1.05);
+}
+
+/* Message style */
+#message {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #000;
+    text-shadow: 0 0 10px orange;
+    text-align: center;
+    animation: fadeIn 3s ease-in-out;
+}
+
+/* Picture style */
+.game-image {
+    max-width: 100%;
+    height: auto;
+    border: 3px solid rgb(113, 156, 243);
+    box-shadow: 0 0 15px rgb(138, 98, 233), 0 0 30px peru;
+    border-radius: 10px;
+    margin: 20px auto 0;
+    display: block;
+    animation: fadeIn 3s ease-in-out;
+}
